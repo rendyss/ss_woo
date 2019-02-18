@@ -26,8 +26,15 @@ global $product;
 
 $attachment_ids = $product->get_gallery_image_ids();
 
-if ( $attachment_ids && $product->get_image_id() ) {
+if ( $attachment_ids && $product->get_image_id() ):
+//	echo "<div class=\"slick3\">";
 	foreach ( $attachment_ids as $attachment_id ) {
 		echo apply_filters( 'woocommerce_single_product_image_thumbnail_html', wc_get_gallery_image_html( $attachment_id ), $attachment_id ); // phpcs:disable WordPress.XSS.EscapeOutput.OutputNotEscaped
+//		echo "<div class=\"item-slick3\" data-thumb=\"" . wp_get_attachment_image_url( $attachment_id ) . "\">";
+//		echo "<div class=\"wrap-pic-w\">";
+//		echo "<img src=\"" . wp_get_attachment_image_url( $attachment_id, 'large' ) . "\" alt=\"IMG-PRODUCT\">";
+//		echo "</div>";
+//		echo "</div>";
 	}
-}
+//	echo "</div>";
+endif;

@@ -28,6 +28,12 @@ if ( ! class_exists( 'Class_SSWoo_Woocommerce' ) ) {
 			$this->_single_product_related_customizer();
 			$this->_loop_product_customizer();
 			$this->_archive_customizer();
+			$this->_single_customizer();
+		}
+
+		private function _single_customizer() {
+			//remove flash
+			remove_action( 'woocommerce_before_single_product_summary', 'woocommerce_show_product_sale_flash', 10 );
 		}
 
 		private function _archive_customizer() {
@@ -168,14 +174,14 @@ if ( ! class_exists( 'Class_SSWoo_Woocommerce' ) ) {
 		function _before_archive_header_callback() {
 			$term = get_queried_object();
 
-			$thumb_url = get_template_directory_uri() . '/assets/images/def-banner.jpg';
 			if ( property_exists( $term, 'term_id' ) ) {
+				$thumb_url    = get_template_directory_uri() . '/assets/images/def-banner.jpg';
 				$thumbnail_id = get_term_meta( $term->term_id, 'thumbnail_id', true );
 				if ( $thumbnail_id ) {
 					$thumb_url = wp_get_attachment_image_url( $thumbnail_id, 'large' );
 				}
+				echo "<section class=\"bg-title-page p-t-50 p-b-40 flex-col-c-m woocommerce-products-header\" style=\"background: url($thumb_url) center no-repeat; background-size: cover;\">";
 			}
-			echo "<section class=\"bg-title-page p-t-50 p-b-40 flex-col-c-m woocommerce-products-header\" style=\"background: url($thumb_url) center no-repeat; background-size: cover;\">";
 		}
 
 		function _custom_archive_desc_callback() {
@@ -224,6 +230,9 @@ if ( ! class_exists( 'Class_SSWoo_Woocommerce' ) ) {
 
 			//remove add to cart
 			remove_action( 'woocommerce_after_shop_loop_item', 'woocommerce_template_loop_add_to_cart', 10 );
+
+			//remove rating
+			remove_action( 'woocommerce_after_shop_loop_item_title', 'woocommerce_template_loop_rating', 5 );
 
 			//add .block2
 			add_action( 'woocommerce_before_shop_loop_item', array( $this, '_before_loop_item_callback' ) );

@@ -26,23 +26,26 @@ if ( $related_products ) : ?>
         <div class="sec-title p-b-60">
             <h3 class="m-text5 t-center"><?php esc_html_e( 'Related products', 'woocommerce' ); ?></h3>
         </div>
-        <!--        <div class="wrap-slick2">-->
-        <!--            <div class="slick2">-->
-		<?php woocommerce_product_loop_start(); ?>
+        <div class="wrap-slick2">
+            <div class="slick2">
+				<?php woocommerce_product_loop_start(); ?>
 
-		<?php foreach ( $related_products as $related_product ) : ?>
+				<?php foreach ( $related_products as $related_product ) : ?>
 
-			<?php $post_object = get_post( $related_product->get_id() );
+                    <div class="item-slick2 p-l-15 p-r-15">
+						<?php $post_object = get_post( $related_product->get_id() );
 
-			setup_postdata( $GLOBALS['post'] =& $post_object );
+						setup_postdata( $GLOBALS['post'] =& $post_object );
 
-			wc_get_template_part( 'content', 'product' ); ?>
+						wc_get_template_part( 'content', 'product' ); ?>
 
-		<?php endforeach; ?>
+                    </div>
 
-		<?php woocommerce_product_loop_end(); ?>
-        <!--            </div>-->
-        <!--        </div>-->
+				<?php endforeach; ?>
+
+				<?php woocommerce_product_loop_end(); ?>
+            </div>
+        </div>
     </section>
 
 <?php endif;
