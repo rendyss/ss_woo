@@ -16,3 +16,12 @@ body.admin_bar {
         margin: 35px 15px 0 15px;
     }
 }
+
+.price del, .price ins {
+    display: block;
+}
+
+.price del {
+    font-size: 10px;
+    color: #777;
+}

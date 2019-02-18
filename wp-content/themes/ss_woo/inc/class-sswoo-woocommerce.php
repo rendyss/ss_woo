@@ -25,6 +25,124 @@ if ( ! class_exists( 'Class_SSWoo_Woocommerce' ) ) {
 			$this->_single_product_add_to_cart_customizer();
 			$this->_single_product_meta_customizer();
 			$this->_single_product_tabs_customizer();
+			$this->_single_product_related_customizer();
+			$this->_loop_product_customizer();
+		}
+
+		private function _loop_product_customizer() {
+
+			//remove link open
+			remove_action( 'woocommerce_before_shop_loop_item', 'woocommerce_template_loop_product_link_open' );
+
+			//remove link close
+			remove_action( 'woocommerce_after_shop_loop_item', 'woocommerce_template_loop_product_link_close' );
+
+			//remove add to cart
+			remove_action( 'woocommerce_after_shop_loop_item', 'woocommerce_template_loop_add_to_cart' );
+
+			//add .item-slick2 .block2
+			add_action( 'woocommerce_before_shop_loop_item', array( $this, '_before_loop_item_callback' ) );
+
+			//add .block2-img
+			add_action( 'woocommerce_before_shop_loop_item_title', array(
+				$this,
+				'_before_loop_item_title_callback'
+			), 5 );
+
+			//add .block2-overlay.trans-0-4
+			add_action( 'woocommerce_before_shop_loop_item_title', array(
+				$this,
+				'_before_add_to_cart_overlay_callback'
+			), 15 );
+
+			//add /.block2-overlay /.block2-img
+			add_action( 'woocommerce_before_shop_loop_item_title', array(
+				$this,
+				'_after_add_to_cart_overlay_callback'
+			), 25 );
+
+			add_action( 'woocommerce_after_shop_loop_item', array( $this, '_after_loop_item_callback' ), 15 );
+			remove_action( 'woocommerce_before_shop_loop_item_title', 'woocommerce_show_product_loop_sale_flash' );
+
+			add_action( 'woocommerce_before_shop_loop_item_title', 'woocommerce_template_loop_add_to_cart', 20 );
+			add_action( 'woocommerce_before_shop_loop_item_title', array(
+				$this,
+				'_before_loop_item_title_and_price_callback'
+			), 30 );
+			add_action( 'woocommerce_after_shop_loop_item_title', array(
+				$this,
+				'_after_loop_item_title_callback'
+			), 15 );
+			remove_action( 'woocommerce_shop_loop_item_title', 'woocommerce_template_loop_product_title' );
+			add_action( 'woocommerce_shop_loop_item_title', array( $this, '_loop_item_title_callback' ) );
+			remove_action( 'woocommerce_after_shop_loop_item_title', 'woocommerce_template_loop_rating' );
+			add_action( 'woocommerce_after_shop_loop_item_title', array(
+				$this,
+				'_after_loop_item_title_and_price_callback'
+			), 5 );
+		}
+
+		function _before_add_to_cart_overlay_callback() {
+			echo "<div class=\"block2-overlay trans-0-4\">
+									<a href=\"#\" class=\"block2-btn-addwishlist hov-pointer trans-0-4\">
+										<i class=\"icon-wishlist icon_heart_alt\" aria-hidden=\"true\"></i>
+										<i class=\"icon-wishlist icon_heart dis-none\" aria-hidden=\"true\"></i>
+									</a>
+
+									<div class=\"loop_add_to_cart block2-btn-addcart w-size1 trans-0-4\">";
+		}
+
+		function _after_add_to_cart_overlay_callback() {
+			echo "</div></div></div>";
+		}
+
+		function _loop_item_title_callback() {
+			global $product;
+			echo "<a href=\"" . $product->get_permalink() . "\" class=\"block2-name dis-block s-text3 p-b-5\" tabindex=\"0\">" . $product->get_title() . "</a>";
+		}
+
+		function _after_loop_item_title_callback() {
+			echo "</div>";
+		}
+
+		function _before_loop_item_title_and_price_callback() {
+			echo "<div class=\"block2-txt p-t-20\">";
+		}
+
+		function _after_loop_item_title_and_price_callback() {
+			echo "</div>";
+		}
+
+		function _before_loop_item_title_callback() {
+			global $product;
+			$prod_class = "block2-img wrap-pic-w of-hidden pos-relative";
+			$prod_class .= $product->is_on_sale() ? " block2-labelsale" : "";
+			echo "<div class=\"$prod_class\">";
+		}
+
+		function _after_loop_item_callback() {
+			echo "</div>";
+//			echo "</div>";
+		}
+
+		function _before_loop_item_callback() {
+			echo "<div class=\"item-slick2 p-l-15 p-r-15\">";
+			echo "<div class=\"block2\">";
+		}
+
+		private function _single_product_related_customizer() {
+			add_action( 'woocommerce_after_single_product_summary', array( $this, '_before_related_callback' ), 5 );
+			add_action( 'woocommerce_after_single_product_summary', array( $this, '_after_related_callback' ), 25 );
+		}
+
+		function _before_related_callback() {
+			echo "<div class=\"bgwhite p-t-45 p-b-138\">";
+			echo "<div class=\"container\">";
+		}
+
+		function _after_related_callback() {
+			echo "</div>";
+			echo "</div>";
 		}
 
 		private function _single_product_tabs_customizer() {
