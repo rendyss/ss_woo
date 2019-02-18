@@ -37,3 +37,14 @@ body.admin_bar {
 ins {
     text-decoration: none;
 }
+
+.block2-btn-addcart {
+    text-align: center;
+    margin: auto;
+}
+
+.block2-btn-addcart .added_to_cart {
+    color: #fff;
+    font-size: small;
+    font-weight: 500;
+}

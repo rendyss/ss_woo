@@ -29,19 +29,19 @@ get_header( 'shop' );
 do_action( 'woocommerce_before_main_content' );
 
 ?>
-		<?php if ( apply_filters( 'woocommerce_show_page_title', true ) ) : ?>
-            <h2 class="l-text2 t-center woocommerce-products-header__title page-title"><?php woocommerce_page_title(); ?></h2>
-		<?php endif; ?>
+<?php if ( apply_filters( 'woocommerce_show_page_title', true ) ) : ?>
+    <h2 class="l-text2 t-center woocommerce-products-header__title page-title"><?php woocommerce_page_title(); ?></h2>
+<?php endif; ?>
 
-		<?php
-		/**
-		 * Hook: woocommerce_archive_description.
-		 *
-		 * @hooked woocommerce_taxonomy_archive_description - 10
-		 * @hooked woocommerce_product_archive_description - 10
-		 */
-		do_action( 'woocommerce_archive_description' );
-		?>
+<?php
+/**
+ * Hook: woocommerce_archive_description.
+ *
+ * @hooked woocommerce_taxonomy_archive_description - 10
+ * @hooked woocommerce_product_archive_description - 10
+ */
+do_action( 'woocommerce_archive_description' );
+?>
 <?php
 if ( woocommerce_product_loop() ) {
 
@@ -66,8 +66,9 @@ if ( woocommerce_product_loop() ) {
 			 * @hooked WC_Structured_Data::generate_product_data() - 10
 			 */
 			do_action( 'woocommerce_shop_loop' );
-
+			echo "<div class=\"col-sm-12 col-md-6 col-lg-4 p-b-50\">";
 			wc_get_template_part( 'content', 'product' );
+			echo "</div>";
 		}
 	}
 

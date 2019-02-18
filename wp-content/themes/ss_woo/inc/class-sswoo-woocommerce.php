@@ -216,87 +216,126 @@ if ( ! class_exists( 'Class_SSWoo_Woocommerce' ) ) {
 			//remove link close
 			remove_action( 'woocommerce_after_shop_loop_item', 'woocommerce_template_loop_product_link_close' );
 
-			//remove add to cart
-			remove_action( 'woocommerce_after_shop_loop_item', 'woocommerce_template_loop_add_to_cart' );
+			//remove flash sale
+			remove_action( 'woocommerce_before_shop_loop_item_title', 'woocommerce_show_product_loop_sale_flash' );
 
-			//add .item-slick2 .block2
+			//remove title
+			remove_action( 'woocommerce_shop_loop_item_title', 'woocommerce_template_loop_product_title', 10 );
+
+			//remove add to cart
+			remove_action( 'woocommerce_after_shop_loop_item', 'woocommerce_template_loop_add_to_cart', 10 );
+
+			//add .block2
 			add_action( 'woocommerce_before_shop_loop_item', array( $this, '_before_loop_item_callback' ) );
 
-			//add .block2-img
+			//add .block2-img.wrap-pic-w.of-hidden.pos-relative
 			add_action( 'woocommerce_before_shop_loop_item_title', array(
 				$this,
-				'_before_loop_item_title_callback'
+				'_before_thumbnail_add_to_cart_callback'
 			), 5 );
+
+			//thumbnail goes here
 
 			//add .block2-overlay.trans-0-4
 			add_action( 'woocommerce_before_shop_loop_item_title', array(
 				$this,
-				'_before_add_to_cart_overlay_callback'
+				'_before_loop_add_to_cart_callback'
 			), 15 );
 
-			//add /.block2-overlay /.block2-img
+			//add wishlist
 			add_action( 'woocommerce_before_shop_loop_item_title', array(
 				$this,
-				'_after_add_to_cart_overlay_callback'
+				'_custom_loop_add_to_wish_list_callback'
+			), 20 );
+
+			//add .block2-btn-addcart w-size1 trans-0-4
+			add_action( 'woocommerce_before_shop_loop_item_title', array(
+				$this,
+				'_before_loop_add_to_cart_button'
 			), 25 );
 
-			add_action( 'woocommerce_after_shop_loop_item', array( $this, '_after_loop_item_callback' ), 15 );
-			remove_action( 'woocommerce_before_shop_loop_item_title', 'woocommerce_show_product_loop_sale_flash' );
+			//add add to cart
+			add_action( 'woocommerce_before_shop_loop_item_title', 'woocommerce_template_loop_add_to_cart', 30 );
 
-			add_action( 'woocommerce_before_shop_loop_item_title', 'woocommerce_template_loop_add_to_cart', 20 );
+			//add closer .block2-btn-addcart w-size1 trans-0-4
 			add_action( 'woocommerce_before_shop_loop_item_title', array(
 				$this,
-				'_before_loop_item_title_and_price_callback'
-			), 30 );
-			add_action( 'woocommerce_after_shop_loop_item_title', array(
+				'_after_loop_add_to_cart_button'
+			), 35 );
+
+			//closer .block2-overlay.trans-0-4
+			add_action( 'woocommerce_before_shop_loop_item_title', array(
 				$this,
-				'_after_loop_item_title_callback'
-			), 15 );
-			remove_action( 'woocommerce_shop_loop_item_title', 'woocommerce_template_loop_product_title' );
-			add_action( 'woocommerce_shop_loop_item_title', array( $this, '_loop_item_title_callback' ) );
-			remove_action( 'woocommerce_after_shop_loop_item_title', 'woocommerce_template_loop_rating' );
-			add_action( 'woocommerce_after_shop_loop_item_title', array(
+				'_after_loop_add_to_cart_callback'
+			), 40 );
+
+			//add closer .block2-img.wrap-pic-w.of-hidden.pos-relative
+			add_action( 'woocommerce_before_shop_loop_item_title', array(
 				$this,
-				'_after_loop_item_title_and_price_callback'
-			), 5 );
+				'_after_thumbnail_add_to_cart_callback'
+			), 45 );
+
+			//add .block2-txt p-t-20
+			add_action( 'woocommerce_after_shop_loop_item_title', array( $this, '_before_loop_price_callback' ), 7 );
+
+			//add title
+			add_action( 'woocommerce_after_shop_loop_item_title', array( $this, '_custom_loop_title_callback' ), 8 );
+
+			//price goes here
+
+			//add closer .block2-txt p-t-20
+			add_action( 'woocommerce_after_shop_loop_item_title', array( $this, '_after_loop_price_callback' ), 15 );
+
+			//add closer .block2
+			add_action( 'woocommerce_after_shop_loop_item', array( $this, '_after_loop_item_callback' ), 15 );
+
 		}
 
-		function _before_add_to_cart_overlay_callback() {
-			echo "<div class=\"block2-overlay trans-0-4\">
-									<a href=\"#\" class=\"block2-btn-addwishlist hov-pointer trans-0-4\">
-										<i class=\"icon-wishlist icon_heart_alt\" aria-hidden=\"true\"></i>
-										<i class=\"icon-wishlist icon_heart dis-none\" aria-hidden=\"true\"></i>
-									</a>
-
-									<div class=\"loop_add_to_cart block2-btn-addcart w-size1 trans-0-4\">";
+		function _before_loop_add_to_cart_button() {
+			echo "<div class=\"block2-btn-addcart w-size1 trans-0-4\">";
 		}
 
-		function _after_add_to_cart_overlay_callback() {
-			echo "</div></div>";
-		}
-
-		function _loop_item_title_callback() {
-			global $product;
-			echo "<a href=\"" . $product->get_permalink() . "\" class=\"block2-name dis-block s-text3 p-b-5\" tabindex=\"0\">" . $product->get_title() . "</a>";
-		}
-
-		function _after_loop_item_title_callback() {
+		function _after_loop_add_to_cart_button() {
 			echo "</div>";
 		}
 
-		function _before_loop_item_title_and_price_callback() {
+		function _custom_loop_add_to_wish_list_callback() {
+			echo "<a href=\"#\" class=\"block2-btn-addwishlist hov-pointer trans-0-4\">
+											<i class=\"icon-wishlist icon_heart_alt\" aria-hidden=\"true\"></i>
+											<i class=\"icon-wishlist icon_heart dis-none\" aria-hidden=\"true\"></i>
+										</a>";
+		}
+
+		function _after_loop_add_to_cart_callback() {
+			echo "</div>";
+		}
+
+		function _before_loop_add_to_cart_callback() {
+			echo "<div class=\"block2-overlay trans-0-4\">";
+		}
+
+		function _custom_loop_title_callback() {
+			global $product;
+			echo "<a href=\"" . $product->get_permalink() . "\" class=\"block2-name dis-block s-text3 p-b-5\">" . $product->get_title() . "</a>";
+		}
+
+		function _after_loop_price_callback() {
+			echo "</div>";
+		}
+
+		function _before_loop_price_callback() {
 			echo "<div class=\"block2-txt p-t-20\">";
 		}
 
-		function _after_loop_item_title_and_price_callback() {
+		function _after_thumbnail_add_to_cart_callback() {
 			echo "</div>";
 		}
 
-		function _before_loop_item_title_callback() {
+		function _before_thumbnail_add_to_cart_callback() {
 			global $product;
-			$prod_class = "block2-img wrap-pic-w of-hidden pos-relative";
-			$prod_class .= $product->is_on_sale() ? " block2-labelsale" : "";
-			echo "<div class=\"$prod_class\">";
+			$pclass = "block2-img wrap-pic-w of-hidden pos-relative";
+			$pclass .= $product->is_on_sale() ? " block2-labelsale" : "";
+			echo "<div class=\"$pclass\">";
 		}
 
 		function _after_loop_item_callback() {
