@@ -27,6 +27,7 @@ if ( ! class_exists( 'Class_SSWoo' ) ) {
 			$this->_load_hooks();
 			$this->_load_customizer();
 			$this->_load_navwalker();
+			$this->_load_woocommerce_customizer();
 		}
 
 		private function _load_assets() {
@@ -52,6 +53,11 @@ if ( ! class_exists( 'Class_SSWoo' ) ) {
 
 		private function _load_navwalker() {
 			require_once get_template_directory() . '/inc/class-sswoo-navwalker.php';
+		}
+
+		private function _load_woocommerce_customizer() {
+			require_once get_template_directory() . '/inc/class-sswoo-woocommerce.php';
+			Class_SSWoo_Woocommerce::init();
 		}
 
 		function _customizer_callback() {
