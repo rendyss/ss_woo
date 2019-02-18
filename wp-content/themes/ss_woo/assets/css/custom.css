@@ -1,3 +1,18 @@
 body.admin_bar {
     padding-top: 32px;
 }
+
+.woocommerce-error, .woocommerce-info, .woocommerce-message {
+    margin: 0;
+!important;
+}
+
+.woocommerce-notices-wrapper > div {
+    margin: 35px 52px 0 52px;
+}
+
+@media (max-width: 768px) {
+    .woocommerce-notices-wrapper > div {
+        margin: 35px 15px 0 15px;
+    }
+}
