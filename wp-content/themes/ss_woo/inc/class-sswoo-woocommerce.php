@@ -24,27 +24,14 @@ if ( ! class_exists( 'Class_SSWoo_Woocommerce' ) ) {
 		private function __construct() {
 			$this->_single_product_add_to_cart_customizer();
 			$this->_single_product_meta_customizer();
-			$this->_single_product_notice_customizer();
+			$this->_single_product_tabs_customizer();
 		}
 
-		private function _single_product_notice_customizer() {
-//			add_action( 'woocommerce_before_single_product', array(
-//				$this,
-//				'_single_product_before_notice_callback'
-//			), 5 );
-//			add_action( 'woocommerce_before_single_product', array(
-//				$this,
-//				'_single_product_after_notice_callback'
-//			), 15 );
-		}
+		private function _single_product_tabs_customizer() {
 
-//		function _single_product_before_notice_callback() {
-//			echo "<div class=\"p-t-35 p-b-35\">";
-//		}
-//
-//		function _single_product_after_notice_callback() {
-//			echo "</div>";
-//		}
+			remove_action( 'woocommerce_after_single_product_summary', 'woocommerce_output_product_data_tabs' );
+			add_action( 'woocommerce_single_product_summary', 'woocommerce_output_product_data_tabs', 55 );
+		}
 
 		private function _single_product_meta_customizer() {
 			add_action( 'woocommerce_product_meta_start', array( $this, '_product_meta_start_callback' ) );
