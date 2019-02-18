@@ -23,4 +23,4 @@ if ( ! defined( 'ABSPATH' ) ) {
 global $product;
 
 ?>
-<span class="m-text17"><?php echo $product->get_price_html(); ?></span>
+<span class="m-text17 sin_price"><?php echo $product->get_price_html(); ?></span>

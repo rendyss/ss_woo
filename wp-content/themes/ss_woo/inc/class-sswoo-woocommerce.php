@@ -27,6 +27,185 @@ if ( ! class_exists( 'Class_SSWoo_Woocommerce' ) ) {
 			$this->_single_product_tabs_customizer();
 			$this->_single_product_related_customizer();
 			$this->_loop_product_customizer();
+			$this->_archive_customizer();
+		}
+
+		private function _archive_customizer() {
+			//remove breadcrumb in archive page
+			remove_action( 'woocommerce_before_main_content', 'woocommerce_breadcrumb', 20 );
+
+			//remove description
+			remove_action( 'woocommerce_archive_description', 'woocommerce_taxonomy_archive_description' );
+			remove_action( 'woocommerce_archive_description', 'woocommerce_product_archive_description' );
+
+			//add our own description
+			add_action( 'woocommerce_archive_description', array( $this, '_custom_archive_desc_callback' ), 10 );
+			add_action( 'woocommerce_archive_description', array(
+				$this,
+				'_custom_product_archive_desc_callback'
+			), 10 );
+
+			//add header wrapper
+			add_action( 'woocommerce_before_main_content', array( $this, '_before_archive_header_callback' ), 50 );
+
+			//add header closer
+			add_action( 'woocommerce_archive_description', array( $this, '_after_archive_header_callback' ), 30 );
+
+			//add content wrapper
+			add_action( 'woocommerce_archive_description', array( $this, '_before_content_callback' ), 40 );
+
+			//add sidebar wrapper
+			add_action( 'woocommerce_archive_description', array( $this, '_before_sidebar_callback' ), 45 );
+
+			//add sidebar
+			add_action( 'woocommerce_archive_description', array( $this, '_sidebar_callback' ), 50 );
+
+			//close sidebar wrapper
+			add_action( 'woocommerce_archive_description', array( $this, '_after_sidebar_callback' ), 55 );
+
+			//before loop item wrapper
+			add_action( 'woocommerce_archive_description', array( $this, '_before_archive_loop_item_callback' ), 60 );
+
+			//add notices
+			add_action( 'woocommerce_archive_description', 'woocommerce_output_all_notices', 65 );
+
+			//after loop item wrapper
+			add_action( 'woocommerce_after_main_content', array( $this, '_after_archive_loop_item_callback' ), 5 );
+
+			//add content closer
+			add_action( 'woocommerce_after_main_content', array( $this, '_after_content_callback' ), 6 );
+
+			//remove resoult count
+			remove_action( 'woocommerce_before_shop_loop', 'woocommerce_result_count', 20 );
+
+			//add wrapper before ordering
+			add_action( 'woocommerce_before_shop_loop', array( $this, '_before_catalog_ordering_callback' ), 25 );
+
+			//add wrapper before result count
+			add_action( 'woocommerce_before_shop_loop', array( $this, '_before_result_count_callback' ), 30 );
+
+			//add result count
+			add_action( 'woocommerce_before_shop_loop', 'woocommerce_result_count', 35 );
+
+			//add closer after result count
+			add_action( 'woocommerce_before_shop_loop', array( $this, '_after_result_count_callback' ), 40 );
+
+			//add closer after catalog
+			add_action( 'woocommerce_before_shop_loop', array( $this, '_after_catalog_ordering_callback' ), 45 );
+
+			//remove notices
+			remove_action( 'woocommerce_before_shop_loop', 'woocommerce_output_all_notices', 10 );
+
+			//add row before item loop
+			add_action( 'woocommerce_before_shop_loop', array( $this, '_before_item_loop_archive_callback' ), 50 );
+
+			//close row after item loop
+			add_action( 'woocommerce_after_shop_loop', array( $this, '_after_item_loop_archive_callback' ), 5 );
+		}
+
+		function _after_item_loop_archive_callback() {
+			echo "</div>";
+		}
+
+		function _before_item_loop_archive_callback() {
+			echo "<div class=\"row\">";
+		}
+
+		function _after_result_count_callback() {
+			echo "</span>";
+		}
+
+		function _before_result_count_callback() {
+			echo "<span class=\"s-text8 p-t-5 p-b-5\">";
+		}
+
+		function _after_catalog_ordering_callback() {
+			echo "</div>";
+		}
+
+		function _before_catalog_ordering_callback() {
+			echo "<div class=\"flex-sb-m flex-w p-b-35\">";
+		}
+
+		function _after_archive_loop_item_callback() {
+			echo "</div>";
+		}
+
+		function _before_archive_loop_item_callback() {
+			echo "<div class=\"col-sm-6 col-md-8 col-lg-9 p-b-50\">";
+		}
+
+		function _after_content_callback() {
+			echo "</div></div></section>";
+		}
+
+		function _before_content_callback() {
+			echo "<section class=\"bgwhite p-t-55 p-b-65\">";
+			echo "<div class=\"container\">";
+			echo "<div class=\"row\">";
+		}
+
+		function _before_sidebar_callback() {
+			echo "<div class=\"col-sm-6 col-md-4 col-lg-3 p-b-50\">";
+		}
+
+		function _sidebar_callback() {
+			global $ssWootemp;
+			$prod_cats = get_categories( array(
+				'taxonomy' => 'product_cat'
+			) );
+			echo $ssWootemp->render( 'woo-archive-sidebar', array( 'prod_cats' => $prod_cats ) );
+		}
+
+		function _after_sidebar_callback() {
+			echo "</div>";
+		}
+
+		function _after_archive_header_callback() {
+			echo "</section>";
+		}
+
+		function _before_archive_header_callback() {
+			$term = get_queried_object();
+
+			$thumb_url = get_template_directory_uri() . '/assets/images/def-banner.jpg';
+			if ( property_exists( $term, 'term_id' ) ) {
+				$thumbnail_id = get_term_meta( $term->term_id, 'thumbnail_id', true );
+				if ( $thumbnail_id ) {
+					$thumb_url = wp_get_attachment_image_url( $thumbnail_id, 'large' );
+				}
+			}
+			echo "<section class=\"bg-title-page p-t-50 p-b-40 flex-col-c-m woocommerce-products-header\" style=\"background: url($thumb_url) center no-repeat; background-size: cover;\">";
+		}
+
+		function _custom_archive_desc_callback() {
+			if ( is_product_taxonomy() && 0 === absint( get_query_var( 'paged' ) ) ) {
+				$term = get_queried_object();
+
+				if ( $term && ! empty( $term->description ) ) {
+					echo '<p class="m-text13 t-center">' . $term->description . '</p>'; // WPCS: XSS ok.
+				}
+			}
+		}
+
+		function _custom_product_archive_desc_callback() {
+			// Don't display the description on search results page.
+			if ( is_search() ) {
+				return;
+			}
+
+			if ( is_post_type_archive( 'product' ) && in_array( absint( get_query_var( 'paged' ) ), array(
+					0,
+					1
+				), true ) ) {
+				$shop_page = get_post( wc_get_page_id( 'shop' ) );
+				if ( $shop_page ) {
+					$description = wc_format_content( $shop_page->post_content );
+					if ( $description ) {
+						echo '<p class="m-text13 t-center">' . $description . '</p>'; // WPCS: XSS ok.
+					}
+				}
+			}
 		}
 
 		private function _loop_product_customizer() {
@@ -93,7 +272,7 @@ if ( ! class_exists( 'Class_SSWoo_Woocommerce' ) ) {
 		}
 
 		function _after_add_to_cart_overlay_callback() {
-			echo "</div></div></div>";
+			echo "</div></div>";
 		}
 
 		function _loop_item_title_callback() {
@@ -122,11 +301,9 @@ if ( ! class_exists( 'Class_SSWoo_Woocommerce' ) ) {
 
 		function _after_loop_item_callback() {
 			echo "</div>";
-//			echo "</div>";
 		}
 
 		function _before_loop_item_callback() {
-			echo "<div class=\"item-slick2 p-l-15 p-r-15\">";
 			echo "<div class=\"block2\">";
 		}
 

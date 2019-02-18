@@ -25,3 +25,15 @@ body.admin_bar {
     font-size: 10px;
     color: #777;
 }
+
+.sin_price del, .sin_price ins {
+    display: block;
+}
+
+.sin_price del {
+    font-size: small;
+}
+
+ins {
+    text-decoration: none;
+}
