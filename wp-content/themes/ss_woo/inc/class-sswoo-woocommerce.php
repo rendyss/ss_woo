@@ -29,6 +29,56 @@ if ( ! class_exists( 'Class_SSWoo_Woocommerce' ) ) {
 			$this->_loop_product_customizer();
 			$this->_archive_customizer();
 			$this->_single_customizer();
+			$this->_cart_customizer();
+		}
+
+		private function _cart_customizer() {
+
+			//add section.cart.bgwhite
+			add_action( 'woocommerce_before_cart', array( $this, '_before_cart_page_callback' ) );
+
+			//add .container-table-cart pos-relative
+			add_action( 'woocommerce_before_cart_table', array( $this, '_before_cart_table_callback' ) );
+
+			//add theading
+			add_action( 'woocommerce_before_cart_contents', array( $this, '_custom_table_heading_callabck' ) );
+
+			//add closer .container-table-cart pos-relative
+			add_action( 'woocommerce_after_cart_table', array( $this, '_after_cart_table_callback' ) );
+
+			//add closer section.cart.bgwhite
+			add_action( 'woocommerce_after_cart', array( $this, '_after_cart_page_callback' ) );
+		}
+
+		function _custom_table_heading_callabck() {
+			echo "<tr class=\"table-head\">";
+			echo "<th class=\"product-remove\">&nbsp;</th>";
+			echo "<th class=\"column-1 product-thumbnail\">&nbsp;</th>";
+			echo "<th class=\"column-2 product-name\">" . __( 'Product', 'woocommerce' ) . "</th>";
+			echo "<th class=\"column-3 product-price\">" . __( 'Price', 'woocommerce' ) . "</th>";
+			echo "<th class=\"column-4 p-l-70 product-quantity\">" . __( 'Quantity', 'woocommerce' ) . "</th>";
+			echo "<th class=\"column-5 product-subtotal\">" . __( 'Total', 'woocommerce' ) . "</th>";
+			echo "</tr>";
+		}
+
+		function _after_cart_table_callback() {
+			echo "</div>";
+			echo "</div>";
+		}
+
+		function _before_cart_table_callback() {
+			echo "<div class=\"container-table-cart pos-relative\">";
+			echo "<div class=\"wrap-table-shopping-cart bgwhite\">";
+		}
+
+		function _after_cart_page_callback() {
+			echo "</div>";
+			echo "</section>";
+		}
+
+		function _before_cart_page_callback() {
+			echo "<section class=\"cart bgwhite p-t-70 p-b-100\">";
+			echo "<div class=\"container\">";
 		}
 
 		private function _single_customizer() {

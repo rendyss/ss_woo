@@ -48,3 +48,7 @@ ins {
     font-size: small;
     font-weight: 500;
 }
+
+td.product-remove {
+    padding-left: 50px;
+}
