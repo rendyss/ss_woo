@@ -30,6 +30,20 @@ if ( ! class_exists( 'Class_SSWoo_Woocommerce' ) ) {
 			$this->_archive_customizer();
 			$this->_single_customizer();
 			$this->_cart_customizer();
+			$this->_ajax_customizer();
+		}
+
+		private function _ajax_customizer() {
+			add_filter( 'woocommerce_add_to_cart_fragments', array( $this, '_add_to_cart_fragment' ) );
+		}
+
+		function _add_to_cart_fragment() {
+			global $woocommerce;
+			ob_start();
+			echo "<span class=\"ccount header-icons-noti\">" . $woocommerce->cart->cart_contents_count . "</span>";
+			$fragments['span.ccount'] = ob_get_clean();
+
+			return $fragments;
 		}
 
 		private function _cart_customizer() {

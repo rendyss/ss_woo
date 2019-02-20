@@ -50,7 +50,7 @@ $nav_footer = $ssWootemp->render( 'nav', array( 'is_top' => false ) );
         <div class="header-wrapicon2">
             <img src="<?php echo get_template_directory_uri(); ?>/assets/images/icons/icon-header-02.png"
                  class="header-icon1 js-show-header-dropdown" alt="ICON">
-            <span class="header-icons-noti">0</span>
+            <span class="ccount header-icons-noti">0</span>
 
             <!-- Header cart noti -->
             <div class="header-cart header-dropdown">
@@ -184,7 +184,7 @@ $nav_footer = $ssWootemp->render( 'nav', array( 'is_top' => false ) );
                 <div class="header-wrapicon2 m-r-13">
                     <img src="<?php echo get_template_directory_uri(); ?>/assets/images/icons/icon-header-02.png"
                          class="header-icon1 js-show-header-dropdown" alt="ICON">
-                    <span class="header-icons-noti">0</span>
+                    <span class="ccount header-icons-noti">0</span>
 
                     <!-- Header cart noti -->
                     <div class="header-cart header-dropdown">
@@ -302,7 +302,7 @@ $nav_footer = $ssWootemp->render( 'nav', array( 'is_top' => false ) );
                 <div class="header-wrapicon2">
                     <img src="<?php echo get_template_directory_uri(); ?>/assets/images/icons/icon-header-02.png"
                          class="header-icon1 js-show-header-dropdown" alt="ICON">
-                    <span class="header-icons-noti">0</span>
+                    <span class="ccount header-icons-noti">0</span>
 
                     <!-- Header cart noti -->
                     <div class="header-cart header-dropdown">
