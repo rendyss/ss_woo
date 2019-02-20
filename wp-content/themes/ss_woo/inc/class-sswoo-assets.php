@@ -63,6 +63,7 @@ if ( ! class_exists( 'Class_SSWoo_Assets' ) ) {
 			wp_enqueue_script( 'parallax100', get_template_directory_uri() . '/assets/vendor/parallax100/parallax100.js', array( 'jquery' ), false, true );
 			wp_enqueue_script( 'main', get_template_directory_uri() . '/assets/js/main.js', array( 'jquery' ), false, true );
 			wp_enqueue_script( 'custom', get_template_directory_uri() . '/assets/js/custom.js', array( 'jquery' ), false, true );
+			wp_localize_script( 'custom', 'my_ajax_object', array( 'ajax_url' => admin_url( 'admin-ajax.php' ) ) );
 		}
 	}
 }

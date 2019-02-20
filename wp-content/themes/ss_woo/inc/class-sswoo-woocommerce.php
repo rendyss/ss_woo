@@ -35,6 +35,100 @@ if ( ! class_exists( 'Class_SSWoo_Woocommerce' ) ) {
 
 		private function _ajax_customizer() {
 			add_filter( 'woocommerce_add_to_cart_fragments', array( $this, '_add_to_cart_fragment' ) );
+
+			//add to cart ajax
+			add_action( 'wp_ajax_nopriv_get_cart', array( $this, '_get_cart' ) );
+			add_action( 'wp_ajax_get_cart', array( $this, '_get_cart' ) );
+
+			//remove item from cart ajax
+			add_action( 'wp_ajax_nopriv_remove_cart', array( $this, '_remove_cart' ) );
+			add_action( 'wp_ajax_remove_cart', array( $this, '_remove_cart' ) );
+
+		}
+
+		function _remove_cart() {
+			$itemKey = ! empty( $_GET['key'] ) ? $_GET['key'] : '';
+			global $woocommerce;
+			$result = array(
+				'left'             => 0,
+				'total_price_left' => '',
+				'nf_wrap'          => "<p>Your cart is currently empty</p>"
+			);
+
+			if ( isset( $itemKey ) ) {
+				$woocommerce->cart->remove_cart_item( $itemKey );
+				$result['left']             = $woocommerce->cart->get_cart_contents_count();
+				$result['total_price_left'] = $woocommerce->cart->get_cart_total();
+			}
+			wp_send_json( $result );
+		}
+
+		function _get_cart() {
+			global $woocommerce;
+			global $ssWootemp;
+			$res = array(
+				'cart_url'     => $woocommerce->cart->get_cart_url(),
+				'checkout_url' => $woocommerce->cart->get_checkout_url(),
+				'total_price'  => $woocommerce->cart->get_cart_total(),
+				'total_items'  => 0,
+				'items'        => array(),
+				'nf_wrap'      => "<li class=\"header-cart-item\"><p>Your cart is currenly unavailable</p></li>",
+				'cart_btn'     => "<div class=\"header-cart-wrapbtn\"><a href=\"" . wc_get_cart_url() . "\" class=\"cartlink flex-c-m size1 bg1 bo-rad-20 hov1 s-text1 trans-0-4\">View Cart</a></div>",
+				'checkout_btn' => "<div class=\"header-cart-wrapbtn\"><a href=\"" . wc_get_checkout_url() . "\" class=\"cartlink flex-c-m size1 bg1 bo-rad-20 hov1 s-text1 trans-0-4\">Checkout</a></div>",
+			);
+			foreach ( $woocommerce->cart->get_cart() as $cart_item_key => $cart_item ) {
+				$_product   = apply_filters( 'woocommerce_cart_item_product', $cart_item['data'], $cart_item, $cart_item_key );
+				$product_id = apply_filters( 'woocommerce_cart_item_product_id', $cart_item['product_id'], $cart_item, $cart_item_key );
+
+				if ( $_product && $_product->exists() && $cart_item['quantity'] > 0 && apply_filters( 'woocommerce_cart_item_visible', true, $cart_item, $cart_item_key ) ) {
+					$product_permalink  = apply_filters( 'woocommerce_cart_item_permalink', $_product->is_visible() ? $_product->get_permalink( $cart_item ) : '', $cart_item, $cart_item_key );
+					$res['total_items'] += $cart_item['quantity'];
+
+					$ptitle = apply_filters( 'woocommerce_cart_item_name', $_product->get_name(), $cart_item, $cart_item_key ) . '&nbsp;';
+					// Meta data
+					echo WC()->cart->get_item_data( $cart_item );
+
+					// Backorder notification
+					if ( $_product->backorders_require_notification() && $_product->is_on_backorder( $cart_item['quantity'] ) ) {
+						$ptitle .= '<p class="backorder_notification">' . esc_html__( 'Available on backorder', 'woocommerce' ) . '</p>';
+					}
+
+					if ( $_product->is_sold_individually() ) {
+						$product_quantity = sprintf( '1 <input type="hidden" name="cart[%s][qty]" value="1" />', $cart_item_key );
+					} else {
+						$product_quantity = woocommerce_quantity_input( array(
+							'input_name'  => "cart[{$cart_item_key}][qty]",
+							'input_value' => $cart_item['quantity'],
+							'max_value'   => $_product->get_max_purchase_quantity(),
+							'min_value'   => '0',
+						), $_product, false );
+					}
+
+					$cqty         = apply_filters( 'woocommerce_cart_item_quantity', $product_quantity, $cart_item_key, $cart_item );
+					$thumbnail_id = get_post_meta( $product_id, '_thumbnail_id', true );
+
+					array_push( $res['items'], array(
+						'id'        => $product_id,
+						'key'       => $cart_item_key,
+						'permalink' => $product_permalink,
+						'thumbnail' => wp_get_attachment_image_url( $thumbnail_id ),
+						'title'     => $ptitle,
+						'price'     => $woocommerce->cart->get_product_price( $_product ),
+						'quantity'  => $cqty,
+						'q_number'  => $cart_item['quantity'],
+						'html'      => $ssWootemp->render( 'cart-mini-ajax', array(
+							'thumbnail_url' => wp_get_attachment_image_url( $thumbnail_id ),
+							'product_url'   => $_product->get_permalink(),
+							'product_title' => $_product->get_title(),
+							'product_price' => $woocommerce->cart->get_product_price( $_product ),
+							'qty_number'    => $cart_item['quantity'],
+							'key'           => $cart_item_key
+						) )
+//						'delete_markup' => "<a class=\"delete cd\"><img src=\"" . get_stylesheet_directory_uri() . "/assets/images/icon-delete.svg\"></a>"
+					) );
+				}
+			}
+			wp_send_json( $res );
 		}
 
 		function _add_to_cart_fragment() {

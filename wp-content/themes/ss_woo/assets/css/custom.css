@@ -52,3 +52,7 @@ ins {
 td.product-remove {
     padding-left: 50px;
 }
+
+/*.header-cart-item-img::after {*/
+    /*content: '';*/
+/*}*/
